@@ -9,9 +9,28 @@ Protocol::Protocol(void){
   Serial.begin(115200);
 }
 
+string readline(){
+  String line;
+  while(1){
+    try{
+      line += Serial.readStringUntil('\n');
+      break;
+    }catch(...){
+    }
+  }
+  line.trim();
+  unsigned char s[1024];
+  line.getBytes(s,sizeof(s));
+  return string((const char*)s, line.length());
+}
+String sconv(string s){
+  return String(s.c_str());
+}
+
 std::map<string,string> Protocol::GetData(void){
   std::map<string,string> out;
-  for(string line; Serial.readStringUntil('\n'); ){
+  for(string line;; ){
+    line=readline();
     if(line.length()==0){
       break;
     }
@@ -26,9 +45,10 @@ std::map<string,string> Protocol::GetData(void){
 
 void Protocol::WriteData(std::map<string,string> data){
   for(auto it=data.cbegin(); it!=data.cend(); it++){
-    Serial.printf("%s", it->first);
+    Serial.print(sconv(it->first));
     Serial.printf(" ");
-    Serial.printf("%s\n", it->second);
+    Serial.print(sconv(it->second));
+    Serial.println();
   }
   Serial.println();
 }

@@ -7,8 +7,8 @@ using namespace std;
 
 Protocol::Protocol(void){}
 
-map<string,string> Protocol::GetData(void){
-  map<string,string> out;
+std::map<string,string> Protocol::GetData(void){
+  std::map<string,string> out;
   for(string line; getline(cin, line); ){
     if(line.length()==0){
       break;
@@ -22,7 +22,7 @@ map<string,string> Protocol::GetData(void){
   return out;
 }
 
-void Protocol::WriteData(map<string,string> data){
+void Protocol::WriteData(std::map<string,string> data){
   for(auto it=data.cbegin(); it!=data.cend(); it++){
     cout << it->first << " " << it->second << endl;
   }
