@@ -6,11 +6,11 @@
 
 using namespace std;
 
-class Stream{
+class Protocol{
 public:
-  Stream(void);
-  map<string,string> GetData(void);
-  void WriteData(map<string,string>);
+  Protocol(void);
+  std::map<string,string> GetData(void);
+  void WriteData(std::map<string,string>);
 
   bool available(void);
 };

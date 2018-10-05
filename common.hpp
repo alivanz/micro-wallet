@@ -6,7 +6,7 @@
 #include <vector>
 using namespace std;
 
-string GetValue(map<string,string>, string);
+string GetValue(std::map<string,string>, string);
 
 vector<char> HexToBytes(string);
 string BytesToHex(vector<char>);

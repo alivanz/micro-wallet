@@ -1,5 +1,5 @@
-#include <command.hpp>
-#include <serial.hpp>
+#include "command.hpp"
+#include "serial.hpp"
 
 using namespace std;
 
@@ -27,15 +27,15 @@ class Echo: virtual public Callable{
 };
 
 Command::Command(){
-  stream = Stream();
+  protocol = Protocol();
   methods["help"] = new HelpCmd(this);
   methods["echo"] = new Echo();
 }
 
 void Command::loop(){
-  if(stream.available()){
+  if(protocol.available()){
     map<string,string> resp;
-    auto request = stream.GetData();
+    auto request = protocol.GetData();
     try{
       auto method_it = request.find("method");
       if(method_it == request.cend()){
@@ -51,6 +51,6 @@ void Command::loop(){
     } catch(string msg) {
       resp["error"] = msg;
     }
-    stream.WriteData(resp);
+    protocol.WriteData(resp);
   }
 }

@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <stdlib.h>
 
 string GetValue(map<string,string> data, string key){
   auto it = data.find(key);

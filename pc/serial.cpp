@@ -5,9 +5,9 @@
 
 using namespace std;
 
-Stream::Stream(void){}
+Protocol::Protocol(void){}
 
-map<string,string> Stream::GetData(void){
+map<string,string> Protocol::GetData(void){
   map<string,string> out;
   for(string line; getline(cin, line); ){
     if(line.length()==0){
@@ -22,14 +22,14 @@ map<string,string> Stream::GetData(void){
   return out;
 }
 
-void Stream::WriteData(map<string,string> data){
+void Protocol::WriteData(map<string,string> data){
   for(auto it=data.cbegin(); it!=data.cend(); it++){
     cout << it->first << " " << it->second << endl;
   }
   cout << endl;
 }
 
-bool Stream::available(void){
+bool Protocol::available(void){
   if(cin.eof()){
     exit(0);
   }
