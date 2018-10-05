@@ -48,6 +48,8 @@ void Command::loop(){
       resp = callable_it->second->Call(request);
     } catch(const char* msg) {
       resp["error"] = msg;
+    } catch(string msg) {
+      resp["error"] = msg;
     }
     stream.WriteData(resp);
   }

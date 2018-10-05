@@ -30,5 +30,8 @@ void Stream::WriteData(map<string,string> data){
 }
 
 bool Stream::available(void){
+  if(cin.eof()){
+    exit(0);
+  }
   return true;
 }
