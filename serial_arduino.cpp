@@ -7,30 +7,28 @@ using namespace std;
 
 Protocol::Protocol(void){
   Serial.begin(115200);
+  Serial.setTimeout(-1);
 }
 
-string readline(){
-  String line;
-  while(1){
-    try{
-      line += Serial.readStringUntil('\n');
-      break;
-    }catch(...){
-    }
-  }
+string Protocol::GetLine(void){
+  String line = Serial.readStringUntil('\n');
   line.trim();
   unsigned char s[1024];
   line.getBytes(s,sizeof(s));
   return string((const char*)s, line.length());
 }
-String sconv(string s){
+void Protocol::WriteLine(string line){
+  Serial.printf("%*s\n", line.length(), line.c_str());
+}
+
+static String sconv(string s){
   return String(s.c_str());
 }
 
 std::map<string,string> Protocol::GetData(void){
   std::map<string,string> out;
   for(string line;; ){
-    line=readline();
+    line=GetLine();
     if(line.length()==0){
       break;
     }
@@ -45,6 +43,7 @@ std::map<string,string> Protocol::GetData(void){
 
 void Protocol::WriteData(std::map<string,string> data){
   for(auto it=data.cbegin(); it!=data.cend(); it++){
+    Serial.printf(">>>");
     Serial.print(sconv(it->first));
     Serial.printf(" ");
     Serial.print(sconv(it->second));

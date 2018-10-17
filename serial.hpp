@@ -9,6 +9,10 @@ using namespace std;
 class Protocol{
 public:
   Protocol(void);
+
+  string GetLine(void);
+  void WriteLine(string);
+  
   std::map<string,string> GetData(void);
   void WriteData(std::map<string,string>);
 
