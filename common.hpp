@@ -11,4 +11,6 @@ string GetValue(std::map<string,string>, string);
 vector<char> HexToBytes(string);
 string BytesToHex(vector<char>);
 
+string ssprintf(const char *format, ...);
+
 #endif

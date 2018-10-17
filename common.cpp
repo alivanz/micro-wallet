@@ -3,6 +3,8 @@
 #include <map>
 #include <vector>
 #include <stdlib.h>
+#include <cstdarg>
+#include <stdio.h>
 
 string GetValue(std::map<string,string> data, string key){
   auto it = data.find(key);
@@ -33,6 +35,12 @@ string BytesToHex(vector<char> bytes){
   return out;
 }
 
-// int StrToInt(string s){;
-//   return stoi(s);
-// }
+string ssprintf(const char *format, ...){
+  va_list argptr;
+  va_start(argptr, format);
+  char buffer[1024];
+  int n = vsnprintf(buffer, sizeof(buffer), format, argptr);
+  va_end(argptr);
+  return string(buffer,n);
+}
+
