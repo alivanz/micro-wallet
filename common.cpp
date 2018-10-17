@@ -4,7 +4,7 @@
 #include <vector>
 #include <stdlib.h>
 
-string GetValue(map<string,string> data, string key){
+string GetValue(std::map<string,string> data, string key){
   auto it = data.find(key);
   if(it == data.cend()){
     throw "key `"+key+"` not found";
@@ -32,3 +32,7 @@ string BytesToHex(vector<char> bytes){
   }
   return out;
 }
+
+// int StrToInt(string s){;
+//   return stoi(s);
+// }

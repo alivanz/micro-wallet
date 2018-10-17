@@ -1,14 +1,14 @@
 #include "command.hpp"
 #include "ecc.hpp"
 
-Command cmd;
+Command *cmd;
 
 void setup() {
-  cmd = Command();
-  cmd.methods["verify"] = new Verify();
-  cmd.loop();
+  cmd = new Command();
+  cmd->methods["verify"] = new Verify();
+  Serial.begin(115200);
 }
 
 void loop() {
-  cmd.loop();
+  cmd->loop();
 }
