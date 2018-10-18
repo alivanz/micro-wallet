@@ -10,6 +10,8 @@ extern "C"{
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
+#include "trng.hpp"
+#include <string.h>
 
 using namespace std;
 
@@ -131,3 +133,43 @@ std::map<string,string> Verify::Call(std::map<string,string> data){
   resp["result"] = "true";
   return resp;
 }
+
+int RNG(uint8_t *dest, unsigned size){
+  uint32_t data;
+  while(size>0){
+    data = TRNG::Read();
+    unsigned l = size;
+    if(l>sizeof(data)){
+      l = sizeof(data);
+    }
+    memcpy(dest, &data, l);
+    size = size - l; 
+  }
+  return 1;
+}
+GeneratePrivateKey::GeneratePrivateKey(){
+  uECC_set_rng(RNG);
+}
+string GeneratePrivateKey::Help(){ return "Generate key from TRNG (int index, string curve)"; }
+std::map<string,string> GeneratePrivateKey::Call(std::map<string,string> data){
+  // Parameter
+  int index            = atoi(GetValue(data, "index").c_str());
+  string scurve        = GetValue(data, "curve");
+  // Check Curve
+  if(scurve!="secp256k1"){
+    throw "unsupported curve";
+  }
+  uECC_Curve curve = uECC_secp256k1();
+  // Generate key
+  vector<char> privkey(64,0);
+  vector<char> pubkey(64,0);
+  if(!uECC_make_key((uint8_t*)&pubkey[0],(uint8_t*)&privkey[0],curve)){
+    throw "Failed to create key";
+  }
+  // Set private key
+  Storage::SetBlock(index, privkey);
+  // Result
+  std::map<string,string> resp;
+  return resp;
+}
+
