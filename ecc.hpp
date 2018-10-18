@@ -14,7 +14,10 @@ class GetPubkey: virtual public Callable{
 };
 class CalcShared: virtual public Callable{};
 class Sign: virtual public Callable{};
-class SignDeterministic: virtual public Callable{};
+class SignDeterministic: virtual public Callable{
+  string Help();
+  std::map<string,string> Call(std::map<string,string> data);
+};
 class Verify: virtual public Callable{
   string Help();
   std::map<string,string> Call(std::map<string,string> data);

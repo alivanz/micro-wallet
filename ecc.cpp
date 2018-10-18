@@ -2,6 +2,9 @@
 #include "command.hpp"
 #include "common.hpp"
 #include "storage.hpp"
+extern "C"{
+  #include "sha2.h"
+}
 
 #include <uECC.h>
 #include <vector>
@@ -48,6 +51,57 @@ std::map<string,string> GetPubkey::Call(std::map<string,string> data){
   std::map<string,string> resp;
   resp["curve"] = "secp256k1";
   resp["pubkey"] = BytesToHex(pubkey);
+  return resp;
+}
+
+typedef struct SHA256_HashContext {
+    uECC_HashContext uECC;
+    SHA256_CTX ctx;
+} SHA256_HashContext;
+
+static void init_SHA256(const uECC_HashContext *base) {
+    SHA256_HashContext *context = (SHA256_HashContext *)base;
+    sha256_Init(&context->ctx);
+}
+
+static void update_SHA256(const uECC_HashContext *base,
+                          const uint8_t *message,
+                          unsigned message_size) {
+    SHA256_HashContext *context = (SHA256_HashContext *)base;
+    sha256_Update(&context->ctx, message, message_size);
+}
+
+static void finish_SHA256(const uECC_HashContext *base, uint8_t *hash_result) {
+    SHA256_HashContext *context = (SHA256_HashContext *)base;
+    sha256_Final(hash_result, &context->ctx);
+}
+
+string SignDeterministic::Help(){ return "Deterministic Signature (int index, hex msghash) => (hex signature)"; };
+std::map<string,string> SignDeterministic::Call(std::map<string,string> data){
+  // Parameter
+  int index            = atoi(GetValue(data, "index").c_str());
+  vector<char> msghash   = HexToBytes(GetValue(data, "msghash"));
+  // Get curve
+  auto curve = uECC_secp256k1();
+  // Get private key
+  auto privkey = Storage::GetBlock(index);
+  // Signature
+  vector<char> signature(64,0);
+  uint8_t tmp[2 * SHA256_DIGEST_LENGTH + SHA256_BLOCK_LENGTH];
+    SHA256_HashContext ctx = {{
+        &init_SHA256,
+        &update_SHA256,
+        &finish_SHA256,
+        SHA256_BLOCK_LENGTH,
+        SHA256_DIGEST_LENGTH,
+        tmp
+    }};
+  if(!uECC_sign_deterministic((const uint8_t *)&privkey[0], (const uint8_t *)&msghash[0], msghash.size(), &ctx.uECC, (uint8_t *)&signature[0], curve)){
+    throw "Signature failed";
+  }
+  // return
+  std::map<string,string> resp;
+  resp["signature"] = BytesToHex(signature);
   return resp;
 }
 
