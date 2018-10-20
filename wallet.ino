@@ -11,6 +11,7 @@ void setup() {
   cmd = new Command();
   cmd->methods["verify"] = new Verify();
   cmd->methods["setprivkey"] = new SetPrivateKey();
+  cmd->methods["getcurve"] = new GetCurve();
   cmd->methods["getpubkey"] = new GetPubkey();
   cmd->methods["signdeterministic"] = new SignDeterministic();
   cmd->methods["genprivkey"] = new GeneratePrivateKey();

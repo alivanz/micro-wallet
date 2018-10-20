@@ -13,6 +13,10 @@ class GeneratePrivateKey: virtual public Callable{
   string Help();
   std::map<string,string> Call(std::map<string,string> data);
 };
+class GetCurve: virtual public Callable{
+  string Help();
+  std::map<string,string> Call(std::map<string,string> data);
+};
 class GetPubkey: virtual public Callable{
   string Help();
   std::map<string,string> Call(std::map<string,string> data);

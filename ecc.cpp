@@ -35,6 +35,13 @@ std::map<string,string> SetPrivateKey::Call(std::map<string,string> data){
   return resp;
 }
 
+string GetCurve::Help(){ return "Get curve (int index) => (curve)"; }
+std::map<string,string> GetCurve::Call(std::map<string,string> data){
+  std::map<string,string> resp;
+  resp["curve"] = "secp256k1";
+  return resp;
+}
+
 string GetPubkey::Help(){ return "Get public key (int index) => (curve, pubkey)"; }
 std::map<string,string> GetPubkey::Call(std::map<string,string> data){
   // Parameter
@@ -143,7 +150,7 @@ int RNG(uint8_t *dest, unsigned size){
       l = sizeof(data);
     }
     memcpy(dest, &data, l);
-    size = size - l; 
+    size = size - l;
   }
   return 1;
 }
@@ -172,4 +179,3 @@ std::map<string,string> GeneratePrivateKey::Call(std::map<string,string> data){
   std::map<string,string> resp;
   return resp;
 }
-
